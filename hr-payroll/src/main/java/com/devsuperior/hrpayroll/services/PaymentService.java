@@ -2,33 +2,25 @@ package com.devsuperior.hrpayroll.services;
 
 import com.devsuperior.hrpayroll.entities.Payment;
 import com.devsuperior.hrpayroll.entities.Worker;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import com.devsuperior.hrpayroll.feignclients.WorkerFeignClient;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @Service
 public class PaymentService {
 
-    private final RestTemplate restTemplate;
+    private final WorkerFeignClient workerFeignClient;
 
-    @Value("${hr-worker.host}")
-    private String workerHost;
-
-    @Autowired
-    public PaymentService(RestTemplate restTemplate) {
-        this.restTemplate = restTemplate;
+    /**
+     * As of Spring Framework 4.3, an @Autowired annotation on such a constructor is no longer necessary if the target bean only defines one constructor to begin with.
+     * However, if several constructors are available, at least one must be annotated to teach the container which one to use.
+     * @param workerFeignClient
+     */
+    public PaymentService(WorkerFeignClient workerFeignClient) {
+        this.workerFeignClient = workerFeignClient;
     }
 
     public Payment getPayment(long workerId, int days){
-
-        Map<String, String> uriVariables = new HashMap<>();
-        uriVariables.put("id", String.valueOf(workerId));
-
-        Worker worker = restTemplate.getForObject(workerHost + "/workers/{id}", Worker.class, uriVariables);
+        Worker worker = workerFeignClient.findById(workerId).getBody();
 
         return Payment.builder()
                 .name(worker.getName())
