@@ -1,5 +1,7 @@
 # ms-spring-cloud-course
-Practical project to creating Spring Cloud based microservices
+Practical project to create Spring Cloud based microservices
+
+![General Architecture](https://github.com/rihck/ms-spring-cloud-course/blob/master/images/generalArquiteture.png)
 
 -----
 
